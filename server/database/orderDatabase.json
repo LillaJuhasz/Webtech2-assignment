@@ -1,0 +1,5 @@
+{"orderID":1, "customerID":1, "windowWidth":100, "windowHeight":140, "shutter":1, "state":"waiting"}
+{"orderID":2, "customerID":1, "windowWidth":90, "windowHeight":140, "shutter":2, "state":"waiting"}
+{"orderID":3, "customerID":2, "windowWidth":90, "windowHeight":120, "shutter":1, "state":"waiting"}
+{"orderID":4, "customerID":3, "windowWidth":120, "windowHeight":100, "shutter":3, "state":"waiting"}
+{"orderID":5, "customerID":4, "windowWidth":90, "windowHeight":120, "shutter":3, "state":"waiting"}

@@ -1,0 +1,4 @@
+{"customerID":1, "firstName":"first", "lastName":"firstlast", "address":"first address", "email":"first@first.com"}
+{"customerID":2, "firstName":"second", "lastName":"secondlast", "address":"second address", "email":"second@second.com"}
+{"customerID":3, "firstName":"third", "lastName":"thirdlast", "address":"third address", "email":"third@third.com"}
+{"customerID":4, "firstName":"fourth", "lastName":"fourthlast", "address":"fourth address", "email":"third@third.com"}

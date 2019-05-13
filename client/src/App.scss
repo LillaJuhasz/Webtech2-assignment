@@ -1,0 +1,76 @@
+@import "../node_modules/bootstrap/scss/bootstrap";
+
+body {
+  background: linear-gradient(45deg,#ef82b6,#ffc6e1);
+}
+
+.container-main {
+  max-width: 600px;
+  margin-bottom: 50px;
+}
+.app-title {
+  color: #fff;
+  font-weight: bold;
+  text-align: center;
+  font-size: 48px;
+}
+
+.form {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 16px 16px rgba(0,0,0,0.1), 0 2px 8px rgba(0,0,0,0.4);
+  padding: 30px 20px;
+}
+
+.form-title {
+  font-weight: bold;
+  color: #ef84b7;
+  font-size: 24px;
+}
+
+.form-content {
+  padding-bottom: 50px;
+  margin-bottom: 50px;
+  border-bottom: 10px dotted #ef84b8;
+}
+
+.form-subtitle {
+  font-weight: bold;
+  margin-bottom: 5px;
+  font-size: 18px;
+}
+
+.btn {
+  background: #ef82b6;
+  margin-top: 5px;
+  color: #fff;
+}
+
+.btn:hover {
+  color: #fff;
+  background: #cc317b;
+}
+
+.margintop-10 {
+  margin-top: 10px;
+}
+
+.block {
+  display: block
+}
+
+.more-data {
+  display: none;
+}
+
+.show-more ~ .more-data {
+  display: block;
+  background: #ffe7f3;
+  padding: 5px 25px;
+  margin: 5px 0;
+  border-radius: 8px;
+}
+
+.marginright-10 {
+  margin-right: 10px;
+}
