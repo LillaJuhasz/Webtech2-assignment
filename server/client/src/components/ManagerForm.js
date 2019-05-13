@@ -19,7 +19,9 @@ class ManagerForm extends React.Component{
             workers: [],
             orders: [],
             shutters: [],
-            customers: []
+            customers: [],
+            selectedOrder: [],
+            selectedWorker: []
         }
 
         this.handleChange = this.handleChange.bind(this);
@@ -58,10 +60,11 @@ class ManagerForm extends React.Component{
         this.state.workers = ShutterStore._workers;
     }
 
-    saveOrderSettings = (e) => {
+    saveOrderSettings = (orderID) => {
 
-        let orderID = Number(e.target.data);
-        let workerID = Number(e.target.value);
+        //let orderID = Number(e.target.data);
+        //console.log("asd"+e.target.data);
+        let workerID = this.state.selectedWorker;
 
         SakilaDispatcher.handlePostAction({
                 actionType: ManagerConstants.ASSIGN_ORDER,
@@ -74,7 +77,7 @@ class ManagerForm extends React.Component{
     }
 
     setPayed = (e) => {
-        let orderID = Number(e.target.name);
+        let orderID = Number(e.target.value);
 
         SakilaDispatcher.handlePostAction({
                 actionType: ManagerConstants.CREATE_INVOICE,
@@ -96,9 +99,10 @@ class ManagerForm extends React.Component{
         document.getElementById(identifier).classList.toggle("show-more");
     }
 
-    setPayed () {
-
+    handleInputChange = (e) => {
+        this.setState({selectedWorker: e.target.value});
     }
+
 
     render() {
         return (
@@ -210,7 +214,7 @@ class ManagerForm extends React.Component{
                                                 </div>
                                                 {this.state.workers.map(worker => (
                                                     <label className="marginright-10" onClick={this.selectedRadio}>
-                                                        <input name="worker" type="radio"/>
+                                                        <input name="worker" type="radio" onChange={this.handleInputChange}/>
                                                         <span>
                                                             {worker.workerID}
                                                         </span>
@@ -224,7 +228,7 @@ class ManagerForm extends React.Component{
                                             }
                                         </div>
                                         <div>
-                                            <button className="btn" name={order.orderID} onClick={this.saveOrderSettings}>
+                                            <button className="btn" name={order.orderID} onClick={()=>this.saveOrderSettings(order.orderID)}>
                                                 Save
                                             </button>
                                         </div>

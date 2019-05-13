@@ -36,8 +36,10 @@ function markOrderAsPacked(request, success, error) {
             assert.equal(null, err);
             if (docs.workerID !== request['workerID']) {
                 error('Error: order is not assigned to the given worker');
+                client.close();
             } else if (docs.state === 'finished') {
                 error('Error: order is already packaged');
+                client.close();
             } else {
                 collection.updateOne({orderID: request['orderID']},
                     {
@@ -49,8 +51,9 @@ function markOrderAsPacked(request, success, error) {
 
                         success(res)
                     });
+                client.close();
             }
-            client.close();
+
         })
 
     })

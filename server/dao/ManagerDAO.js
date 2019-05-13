@@ -119,11 +119,13 @@ function createInvoice(request, success, error) {
 
         const db = client.db(dbName);
         const collection = db.collection(orderDatabase);
-
+        console.log(request['orderID']);
         collection.findOne({orderID: request['orderID']}, (err, docs) => {
+
             assert.equal(null, err);
             if (docs.state !== 'finished') {
                 error('Error: order is not finished yet.');
+                client.close();
             } else {
                 collection.updateOne({orderID: request['orderID']},
                     {
@@ -134,8 +136,9 @@ function createInvoice(request, success, error) {
                         assert.equal(null, err);
                         success(res)
                     });
+                client.close();
             }
-            client.close();
+
         });
 
     })
