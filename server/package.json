@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "preinstall": "cd ../client && npm install && cd ../server",
+    "preinstall": "cd client && npm install && cd ..",
+    "prestart": "cd client && npm run build && cd ..",
     "test": "mocha",
     "start": "node app.js"
   },
