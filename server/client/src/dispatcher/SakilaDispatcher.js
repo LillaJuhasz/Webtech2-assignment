@@ -208,7 +208,7 @@ dispatcher.register((data)=>{
     if(data.payload.actionType !== ManagerConstants.LIST_CUSTOMERS){
         return;
     }
-    console.log("customers "+data.payload.payload);
+
     fetch('/api/manager/listCustomers',{
         headers : {
             "Content-Type" : "application/json",

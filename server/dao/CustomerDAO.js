@@ -42,29 +42,6 @@ function readCustomer(findParam, callback) {
     })
 }
 
-function readShutters(findParams, callback) {
-    var client = new MongoClient(url);
-    client.connect((err)=>{
-        assert.equal(null, err);
-
-        const db = client.db(dbName);
-        const collection= db.collection(shutterDatabase);
-
-        collection.find(findParams).toArray(function(err, docs) {
-            assert.equal(err, null);
-            callback(docs)
-        });
-        client.close();
-    })
-}
-
-function readAllShutters(callback){
-    readShutters({},(result) => {callback(result)})
-}
-
-function readShutterById(shutterID,callback){
-    readShutters({"shutterID" : shutterID},(result) => {callback(result)})
-}
 
 function createOrder(request, callback) {
     var client = new MongoClient(url);
@@ -107,6 +84,30 @@ function readOrdersOfCustomer(customerID,callback){
     readOrders({"customerID" : customerID},(result) => {callback(result)})
 }
 
+
+function readShutters(findParams, callback) {
+    var client = new MongoClient(url);
+    client.connect((err)=>{
+        assert.equal(null, err);
+
+        const db = client.db(dbName);
+        const collection= db.collection(shutterDatabase);
+
+        collection.find(findParams).toArray(function(err, docs) {
+            assert.equal(err, null);
+            callback(docs)
+        });
+        client.close();
+    })
+}
+
+function readAllShutters(callback){
+    readShutters({},(result) => {callback(result)})
+}
+
+function readShutterById(shutterID,callback){
+    readShutters({"shutterID" : shutterID},(result) => {callback(result)})
+}
 
 
 module.exports = {

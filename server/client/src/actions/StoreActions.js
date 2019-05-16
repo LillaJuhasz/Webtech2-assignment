@@ -33,11 +33,13 @@ class StoreActions {
 
     setPayed = (e) => {
         let orderID = Number(e.target.value);
+        let shutterID;
 
         SakilaDispatcher.handlePostAction({
                 actionType: ManagerConstants.CREATE_INVOICE,
                 payload: {
-                    orderID: orderID
+                    orderID: orderID,
+                    shutterID: shutterID
                 }
             }
         );
@@ -102,10 +104,16 @@ class StoreActions {
     }
 
     listOrders(orderID){
-        SakilaDispatcher.handleViewAction({
-            actionType : WorkerConstants.LIST_ORDERS,
-            payload : orderID
-        });
+        setTimeout(
+            function() {
+                SakilaDispatcher.handleViewAction({
+                    actionType : WorkerConstants.LIST_ORDERS,
+                    payload : orderID
+                });
+            }
+            ,100
+        );
+
     }
 }
 

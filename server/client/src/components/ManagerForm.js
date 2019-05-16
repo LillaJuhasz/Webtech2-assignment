@@ -13,7 +13,8 @@ class ManagerForm extends React.Component {
             workers: ShutterStore._workers,
             orders: ShutterStore._orders,
             customers: ShutterStore._customers,
-            selectedWorker: []
+            selectedWorker: [],
+            selectedShutter: []
         };
 
         StoreActions.listOrders();
@@ -49,11 +50,15 @@ class ManagerForm extends React.Component {
         this.setState({selectedWorker: Number(e.target.value)});
     };
 
-    setChecked = () => {
-        console.log("set ckecked");
-    };
+    setPayed = (e, shutterID) => {
 
-    setPayed = (e) => {
+        console.log(e.target.value);
+
+        this.state.orders.map(order =>{
+            console.log(order.shutter);
+        });
+
+
         StoreActions.setPayed(e);
         StoreActions.listOrders(e);
 
@@ -160,21 +165,23 @@ class ManagerForm extends React.Component {
                                             ))}
 
                                         {order.state === "finished" || order.state === "payed"
-                                        ?
+                                            ?
                                             <div>
                                                 {order.state === "finished"
                                                     ?
                                                     <div className="mt-16">
                                                         <label className="checkbox-holder">
-                                                            <input className="input-checkbox" type="checkbox" name={order.state}
-                                                                   value={order.orderID} checked={order.state==='payed'}
-                                                                   onChange={this.setChecked}/>
+                                                            <input className="input-checkbox" type="checkbox"
+                                                                   name={order.shutter}
+                                                                   value={order.orderID}
+                                                            />
                                                             <span className="checkbox">
-                                                    <strong>payed</strong>
-                                                </span>
+                                                                <strong>payed</strong>
+                                                            </span>
                                                         </label>
                                                         <div>
-                                                            <button className="btn" value={order.orderID} onClick={this.setPayed}>
+                                                            <button className="btn" value={order.orderID}
+                                                                    onClick={this.setPayed}>
                                                                 Save
                                                             </button>
                                                         </div>
@@ -188,25 +195,23 @@ class ManagerForm extends React.Component {
                                                     ?
                                                     <div className="mt-16">
                                                         <label className="checkbox-holder">
-                                                            <input className="input-checkbox" type="checkbox" name={order.state}
-                                                                   value={order.orderID} checked={order.state==='payed'}
-                                                                   onChange={this.setChecked}/>
+                                                            <input className="input-checkbox" type="checkbox"
+                                                                   name={order.shutter}
+                                                                   value={order.orderID}
+                                                                   checked
+                                                            />
                                                             <span className="checkbox">
-                                                    <strong>payed</strong>
-                                                </span>
+                                                                <strong>payed</strong>
+                                                            </span>
                                                         </label>
                                                     </div>
                                                     :
-                                                    <div>
-
-                                                    </div>
+                                                    ""
                                                 }
 
                                             </div>
-                                        :
-                                        <div>
-
-                                        </div>
+                                            :
+                                            ""
                                         }
                                         <div>
                                             {!order.workerID

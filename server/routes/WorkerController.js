@@ -5,17 +5,8 @@ var ws = require('../services/WorkerService');
 const workerService = new ws();
 
 
-router.get('/listPendingOrders', (req, res) => {
-    if (req.query['workerID'] === undefined || req.query['workerID'] === '') {
-        res.status(400).send("Worker id must be defined");
-        return;
-    }
 
-    workerService.listPendingOrders({workerID: parseInt(req.query["workerID"])},
-        (orders) => {res.status(200).send(orders)},
-        (cause) => {res.status(400).send(cause)})
-});
-
+/* *** POST METHODS *** */
 
 router.post('/finishOrder', (req, res) => {
     if (req.body['workerID'] === undefined || req.body['workerID'] === '') {
@@ -31,6 +22,9 @@ router.post('/finishOrder', (req, res) => {
         () => {res.status(200).send("Mark order as finished")},
         (cause) => {res.status(400).send(cause)})
 });
+
+
+/* *** GET METHODS *** */
 
 router.get('/listOrderByID',(req,res) =>{
     workerService.listOrders((requests) =>{

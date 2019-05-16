@@ -53,7 +53,6 @@ class CustomerForm extends React.Component{
     registration = (id) => {
         id = this.state.customers.length+1;
         StoreActions.registration(id);
-        StoreActions.listCustomers(id);
 
         this.state.signedCustomer = id;
         this.setState({signed: true});

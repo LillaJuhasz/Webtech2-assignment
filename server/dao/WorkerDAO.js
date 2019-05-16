@@ -7,22 +7,6 @@ const dbName = 'shutter-shop';
 const orderDatabase = 'orderDatabase';
 
 
-function getPendingOrders(request, callback) {
-    var client = new MongoClient(url);
-    client.connect((err)=> {
-        assert.equal(null, err);
-
-        const db = client.db(dbName);
-        const collection = db.collection(orderDatabase);
-
-        collection.find({ $or: [ { workerID: false }, { workerID: request['workerID'] } ] }).toArray((err, docs) => {
-            assert.equal(err, null);
-            callback(docs)
-        });
-        client.close();
-
-    })
-}
 
 function markOrderAsPacked(request, success, error) {
     var client = new MongoClient(url);
@@ -87,7 +71,6 @@ function readOrdersByID(orderID,callback){
 
 
 module.exports = {
-    "getPendingOrders": getPendingOrders,
     "markOrderAsPacked": markOrderAsPacked,
     "readOrders": readAllOrders,
     "readOrdersByID" : readOrdersByID

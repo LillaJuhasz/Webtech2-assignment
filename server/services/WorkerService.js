@@ -9,10 +9,6 @@ function WorkerService(workerDAO) {
     }
 }
 
-WorkerService.prototype.listPendingOrders = function (request, success, error) {
-    this.workerDAO.getPendingOrders(request, (orders)=>{success(orders)})
-};
-
 
 WorkerService.prototype.markOrder = function (request, success, error) {
     request['state'] = new md5().update(JSON.stringify({
@@ -26,10 +22,6 @@ WorkerService.prototype.markOrder = function (request, success, error) {
 
 WorkerService.prototype.listOrders = function(callback){
     this.workerDAO.readOrders((requests) => {callback(requests)})
-};
-
-WorkerService.prototype.listOrdersByID = function(orderID, callback){
-    this.workerDAO.readOrdersByID(orderID, (requests) =>{callback(requests)})
 };
 
 

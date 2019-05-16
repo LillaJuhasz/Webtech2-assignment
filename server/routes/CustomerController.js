@@ -5,6 +5,9 @@ var srs = require('../services/CustomerService');
 const customerService = new srs();
 
 
+
+/* *** POST METHODS *** */
+
 router.post('/newCustomer', (req, res) => {
     if ( req.body['customerID'] === undefined || req.body['customerID'] ==='') {
         res.status(414).send('Customer ID must be defined');
@@ -34,22 +37,6 @@ router.post('/newCustomer', (req, res) => {
             email: req.body['email']},
         () => {res.status(200).send("Customer created")},
         (cause) => {res.status(400).send(cause)})
-});
-
-router.get('/:customerID/listCustomers', (req, res) => {
-    //if (req.query['customerID'] === undefined) {
-     //   res.status(414).send('Customer must be defined');
-    //    return;
-    //}
-    customerService.getCustomer(parseInt(req.params['customerID']),
-        (customerDatabase) => {res.status(200).send(customerDatabase)},
-        (cause) => {res.status(400).send(cause)});
-});
-
-router.get('/listShutters',(req,res) =>{
-    customerService.getShutters((requests) =>{
-        res.status(200).send(requests)
-    })
 });
 
 
@@ -86,11 +73,14 @@ router.post('/newOrder', (req, res) => {
 });
 
 
-router.get('/listOrders',(req,res) =>{
-    customerService.listOrders((requests) =>{
+/* *** GET METHODS *** */
+
+router.get('/listShutters',(req,res) =>{
+    customerService.getShutters((requests) =>{
         res.status(200).send(requests)
     })
 });
+
 
 
 module.exports = router;

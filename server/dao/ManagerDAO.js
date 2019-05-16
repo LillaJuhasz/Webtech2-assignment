@@ -130,7 +130,8 @@ function createInvoice(request, success, error) {
                 collection.updateOne({orderID: request['orderID']},
                     {
                         $set: {
-                            state: 'payed'
+                            state: 'payed',
+                            invoice: request['date']
                         }
                     }, (err,res)=>{
                         assert.equal(null, err);
