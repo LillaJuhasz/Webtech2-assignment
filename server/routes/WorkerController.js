@@ -33,14 +33,6 @@ router.post('/finishOrder', (req, res) => {
 });
 
 router.get('/listOrderByID',(req,res) =>{
-    if(req.query['orderID'] !== undefined){
-
-        console.log(typeof req.query['orderID']);
-        workerService.listOrdersByID(parseInt(req.query['orderID']), (requests)=>{
-            res.status(200).send(requests)
-        });
-        return;
-    }
     workerService.listOrders((requests) =>{
         res.status(200).send(requests)
     })

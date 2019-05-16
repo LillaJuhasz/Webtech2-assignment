@@ -36,23 +36,17 @@ router.post('/newCustomer', (req, res) => {
         (cause) => {res.status(400).send(cause)})
 });
 
-router.get('/listCustomers', (req, res) => {
-    if (req.query['customerID'] === undefined) {
-        res.status(414).send('Customer must be defined');
-        return;
-    }
-    customerService.getCustomer(parseInt(req.query['customerID']),
+router.get('/:customerID/listCustomers', (req, res) => {
+    //if (req.query['customerID'] === undefined) {
+     //   res.status(414).send('Customer must be defined');
+    //    return;
+    //}
+    customerService.getCustomer(parseInt(req.params['customerID']),
         (customerDatabase) => {res.status(200).send(customerDatabase)},
         (cause) => {res.status(400).send(cause)});
 });
 
 router.get('/listShutters',(req,res) =>{
-    if(req.query['shutterID'] !== undefined){
-        customerService.getShutter(parseInt(req.query['shutterID']), (requests)=>{
-            res.status(200).send(requests)
-        });
-        return;
-    }
     customerService.getShutters((requests) =>{
         res.status(200).send(requests)
     })
@@ -93,13 +87,6 @@ router.post('/newOrder', (req, res) => {
 
 
 router.get('/listOrders',(req,res) =>{
-    if(req.query['customerID'] !== undefined){
-
-        customerService.listOrdersOfCustomer(parseInt(req.query['customerID']), (requests)=>{
-            res.status(200).send(requests)
-        });
-        return;
-    }
     customerService.listOrders((requests) =>{
         res.status(200).send(requests)
     })

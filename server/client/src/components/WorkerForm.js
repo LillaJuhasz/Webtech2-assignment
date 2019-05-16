@@ -1,28 +1,41 @@
 import React from 'react';
-
-import SakilaDispatcher from '../dispatcher/SakilaDispatcher'
-import WorkerConstants from "../constants/WorkerConstants";
-import ManagerConstants from "../constants/ManagerConstants";
-import CustomerConstants from "../constants/CustomerConstants";
 import ShutterStore from "../store/ShutterStore";
+import StoreActions from '../actions/StoreActions';
 
-class CustomerForm extends React.Component{
+
+class WorkerForm extends React.Component{
+
     constructor(props) {
         super(props);
-
         this.state = {
             signed: false,
             signWId: undefined,
-            shutters: [],
-            workers: [],
-            orders: []
-        }
+            shutters: ShutterStore._shutters,
+            workers: ShutterStore._workers,
+            orders: ShutterStore._orders
+        };
 
-
+        StoreActions.listOrders();
+        StoreActions.listShutters();
+        StoreActions.listWorkers();
+        this._onChange = this._onChange.bind(this);
         this.handleStateSet = this.handleStateSet.bind(this);
-        this.handleChange = this.handleChange.bind(this);
-        ShutterStore.addChangeListener(this.handleChange);
     }
+
+    _onChange(){
+        this.setState({orders : ShutterStore._orders});
+        this.setState({shutters : ShutterStore._shutters});
+        this.setState({workers : ShutterStore._workers});
+    }
+
+    componentDidMount(){
+        ShutterStore.addChangeListener(this._onChange);
+    }
+
+    componentWillUnmount(){
+        ShutterStore.removeChangeListener(this._onChange)
+    }
+
 
     handleStateSet({ target }) {
         this.setState({
@@ -30,51 +43,27 @@ class CustomerForm extends React.Component{
         });
     }
 
-    finishOrder = (e) => {
-        let orderID = Number(e.target.name);
-        let workerID = Number(e.target.value);
-        console.log(workerID + ", " + orderID);
 
-        SakilaDispatcher.handlePostAction({
-                actionType: WorkerConstants.FINISH_ORDER,
-                payload: {
-                    orderID: orderID,
-                    workerID: workerID
-                }
-            }
-        );
+    finishOrder = (e) => {
+        StoreActions.finishOrder(e);
 
         this.state.orders.map(order => {
             if(order.orderID === e.target.name) {
                 order.state = "finished";
             }
-        })
+        });
         e.target.checked = true;
-    }
 
-    componentDidMount(){
-        SakilaDispatcher.handleViewAction(
-            { actionType: WorkerConstants.LIST_PENDING_ORDERS }
-        );
+        StoreActions.listOrders(e);
 
-        SakilaDispatcher.handleViewAction(
-            { actionType: ManagerConstants.LIST_WORKERS }
-        );
+        alert("Order marked as finished!");
+    };
 
-        SakilaDispatcher.handleViewAction(
-            { actionType: CustomerConstants.LIST_SHUTTERS }
-        );
-    }
-
-    componentWillUnmount(){
-
-    }
 
     signIn = () =>  {
         let validate = false;
 
         this.state.workers.map(worker => {
-            console.log(this.state.signWId + ", " + worker.workerID);
             if(Number(this.state.signWId) === Number(worker.workerID)) {
                 this.setState({signed: true});
                 validate = true;
@@ -82,25 +71,14 @@ class CustomerForm extends React.Component{
         });
 
         if(validate === false) {
-            alert(this.state.signWId + " is not empty");
+            alert(this.state.signWId + " is not a valid worker ID");
         }
-    }
+    };
 
     signOut = () =>  {
         this.setState({signed: false});
-    }
+    };
 
-    handleChange() {
-        this.state.orders = ShutterStore._orders;
-
-        this.state.workers = ShutterStore._workers;
-
-        this.state.shutters = ShutterStore._shutters;
-    }
-
-    sendData () {
-
-    }
 
     render() {
         return (
@@ -115,7 +93,7 @@ class CustomerForm extends React.Component{
                         </div>
                         <div>
                             <div>
-                                Sign in with your ID
+                                Sign in with ID:
                             </div>
                             <div>
                                 <div>
@@ -142,16 +120,17 @@ class CustomerForm extends React.Component{
                                     </div>
                                     <div>
                                         <button className="btn" onClick={this.signOut}>log out</button>
+                                        <hr/>
                                     </div>
                                 </div>
                             </div>
                             <div>
-                                <div>
-                                    List of your jobs:
+                                <div className="form-subtitle">
+                                    List pending jobs:
                                 </div>
                                 <div className="margintop-10">
                                     {this.state.orders.map(order => (
-                                        Number(worker.workerID) === Number(order.workerID)
+                                        Number(worker.workerID) === Number(order.workerID) && order.state === 'inprogress'
                                         ?
                                         <div>
                                             <div>
@@ -161,42 +140,21 @@ class CustomerForm extends React.Component{
                                                 <strong>Customer's ID: </strong> {order.customerID}
                                             </div>
                                             <div>
-                                                <strong>Window size: </strong> {order.windowWidth} * {order.windowHeight}
+                                                <strong>Window size: </strong> {order.windowWidth} cm * {order.windowHeight} cm
                                             </div>
-                                            {this.state.shutters.map(shutter => (
-                                                shutter.shutterID === order.shutter
-                                                ?
-                                                <div>
-                                                    <div>
-                                                        <strong>Shutter's material: </strong> {shutter.material}
-                                                    </div>
-                                                    <div>
-                                                        <strong>Shutter's color: </strong> {shutter.color}
-                                                    </div>
-                                                    <div>
-                                                        <strong>Shutter's price: </strong> {shutter.price}
-                                                    </div>
-                                                </div>
-                                                :
-                                                <div>
-
-                                                </div>
-                                            ))}
+                                            <div>
+                                                <strong>Shutter type: </strong> {order.shutter}
+                                            </div>
 
                                             <div>
-                                                <label>
-                                                    <input type="checkbox"
-                                                           value={worker.workerID} name={order.orderID} checked={order.state === "finished" || order.state === "payed"}
-                                                           onChange={this.finishOrder}/>
-                                                    <span className="checkbox">
-                                                    <strong>finished</strong>
-                                                </span>
-                                                </label>
+                                                <button className="btn" value={worker.workerID} name={order.orderID} onClick={this.finishOrder}>finish job</button>
                                             </div>
                                             <hr/>
                                         </div>
                                         :
-                                        <div></div>
+                                        <div>
+
+                                        </div>
                                     ))}
                                 </div>
                             </div>
@@ -213,4 +171,4 @@ class CustomerForm extends React.Component{
     }
 }
 
-export default CustomerForm;
+export default WorkerForm;

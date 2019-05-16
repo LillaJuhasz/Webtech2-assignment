@@ -1,63 +1,42 @@
 import React from 'react'
 import ShutterStore from "../store/ShutterStore";
-import SakilaDispatcher from "../dispatcher/SakilaDispatcher";
-import WorkerConstants from "../constants/WorkerConstants";
-import CustomerConstants from "../constants/CustomerConstants";
-import ManagerConstants from "../constants/ManagerConstants";
-import divWithClassName from "react-bootstrap/es/utils/divWithClassName";
+import StoreActions from "../actions/StoreActions";
+
 
 class CustomerForm extends React.Component{
+
     constructor(props) {
         super(props);
         this.state = {
             signed: false,
-            colors: [
-                "brown",
-                "gray",
-                "white"
-            ],
-            materials: [
-                "plastic",
-                "metal",
-                "wood"
-            ],
-            orders: [],
-            customers: [],
-            shutters: [],
+            orders: ShutterStore._orders,
+            customers: ShutterStore._customers,
+            shutters: ShutterStore._shutters,
             signedCustomer: undefined,
-            selectedShutter: undefined
-        }
+            selectedShutter: undefined,
+            number: 0
+        };
 
-        this.handleChange = this.handleChange.bind(this);
-        ShutterStore.addChangeListener(this.handleChange);
+        StoreActions.listShutters();
+        StoreActions.listOrders();
+        StoreActions.listCustomers();
+        this._onChange = this._onChange.bind(this);
+    }
+
+    _onChange(){
+        this.setState({orders : ShutterStore._orders});
+        this.setState({shutters : ShutterStore._shutters});
+        this.setState({customers : ShutterStore._customers});
     }
 
     componentDidMount(){
-        SakilaDispatcher.handleViewAction(
-            { actionType: WorkerConstants.LIST_ORDERS }
-        );
-
-        SakilaDispatcher.handleViewAction(
-            { actionType: CustomerConstants.LIST_CUSTOMERS }
-        );
-
-        SakilaDispatcher.handleViewAction(
-            { actionType: CustomerConstants.LIST_SHUTTERS }
-        );
-
+        ShutterStore.addChangeListener(this._onChange);
     }
 
     componentWillUnmount(){
-
+        ShutterStore.removeChangeListener(this._onChange)
     }
 
-    handleChange() {
-        this.state.orders = ShutterStore._orders;
-
-        this.state.customers = ShutterStore._customers;
-
-        this.state.shutters = ShutterStore._shutters;
-    }
 
     signIn = () =>  {
         this.state.customers.map(customer => {
@@ -67,63 +46,40 @@ class CustomerForm extends React.Component{
             }
         });
         if(this.state.signedCustomer === undefined) {
-            alert("Please registrate before sign in");
+            alert("Please register before sign in!");
         }
-    }
+    };
 
-    registration = () => {
-        let firstName = document.getElementById("firstName").value;
-        let lastName = document.getElementById("lastName").value;
-        let email = document.getElementById("email").value;
-        let address = document.getElementById("address").value;
+    registration = (id) => {
+        id = this.state.customers.length+1;
+        StoreActions.registration(id);
+        StoreActions.listCustomers(id);
 
-        let id = this.state.customers.length+1;
-
-        SakilaDispatcher.handlePostAction({
-                actionType: CustomerConstants.CREATE_CUSTOMER,
-                payload: {
-                    customerID: id,
-                    firstName: firstName,
-                    lastName: lastName,
-                    address: address,
-                    email: email
-                }
-            }
-        );
         this.state.signedCustomer = id;
-        console.log(this.state.signedCustomer);
         this.setState({signed: true});
-    }
+
+        alert("Registration succeed!");
+    };
 
     signOut = () =>  {
         this.setState({signed: false});
         this.state.signedCustomer = undefined;
-    }
+    };
 
-    createOrder = () => {
-        let windowWidth = document.getElementById("windowWidth").value;
-        let windowHeight = document.getElementById("windowHeight").value;
-        let shutter = this.state.selectedShutter;
-        let orderID = this.state.orders.length + 1;
-        let customerID =  this.state.signedCustomer;
+    createOrder = (shutter, orderID, customerID) => {
+        shutter = this.state.selectedShutter;
+        orderID = this.state.orders.length + 1;
+        customerID =  this.state.signedCustomer;
 
-        SakilaDispatcher.handlePostAction({
-                actionType: CustomerConstants.NEW_ORDER,
-                payload: {
-                    orderID: orderID,
-                    customerID: customerID,
-                    windowWidth: windowWidth,
-                    windowHeight: windowHeight,
-                    shutter: shutter
-                }
-            }
-        );
+        StoreActions.createOrder(shutter, orderID, customerID);
+        StoreActions.listOrders(orderID);
 
-    }
+        alert("Creating order succeed!");
+    };
 
     selectShutter = (e) => {
         this.state.selectedShutter = Number(e.target.value);
-    }
+    };
 
     render() {
         return (
@@ -134,10 +90,13 @@ class CustomerForm extends React.Component{
                         <span>Customer</span>
                         :
                         <div>
-                            <span>Customer</span>
-                            <div>
-                                <button className="btn" onClick={this.signOut}>log out</button>
+                            <div className="form-title">
+                                Welcome {this.state.customers.firstName}
                             </div>
+                            <div>
+                            <button className="btn" onClick={this.signOut}>log out</button>
+                                <hr/>
+                        </div>
                         </div>
                     }
                 </div>
@@ -147,7 +106,7 @@ class CustomerForm extends React.Component{
                         <div>
                             <div>
                                 <div>
-                                    <div>Sign in with your E-mail</div>
+                                    <div>Sign in with e-mail:</div>
                                     <input id="signInEmail" className="input-field" type="email"/>
                                 </div>
                                 <button className="btn" onClick={this.signIn}>
@@ -186,16 +145,16 @@ class CustomerForm extends React.Component{
                     :
                     <div>
                         <div>
-                            <div>
-                                <strong>Ordering</strong>
+                            <div className="form-subtitle">
+                                Ordering
                             </div>
                             <div>
                                 <div>
-                                    <div>Window width</div>
+                                    <div>Window width (cm)</div>
                                     <input id="windowWidth" type="text"/>
                                 </div>
                                 <div>
-                                    <div>Window height</div>
+                                    <div>Window height (cm)</div>
                                     <input id="windowHeight" type="text"/>
                                 </div>
                                 <div>
@@ -206,7 +165,7 @@ class CustomerForm extends React.Component{
                                         <label className="block">
                                             <input name="shutter" value={shutter.shutterID} type="radio" onClick={this.selectShutter}/>
                                             <span>
-                                                {shutter.material}, {shutter.color}, {shutter.price}
+                                                {shutter.material}, {shutter.color}, {shutter.price} $
                                             </span>
                                         </label>
                                         ))}
@@ -218,7 +177,7 @@ class CustomerForm extends React.Component{
                         </div>
                         <hr/>
                         <div>
-                            <div>
+                            <div className="form-subtitle">
                                 My orders
                             </div>
                             <div>
@@ -227,14 +186,27 @@ class CustomerForm extends React.Component{
                                         ?
                                         <div>
                                             <div>
-                                                <strong>Customer ID: </strong> {order.customerID}
+                                                <strong>Window: </strong> {order.windowWidth} cm * {order.windowHeight} cm
                                             </div>
-                                            <div>
-                                                <strong>Window: </strong> {order.windowWidth} * {order.windowHeight}
-                                            </div>
-                                            <div>
-                                                <strong>Shutter type: </strong> {order.shutter}
-                                            </div>
+                                            {this.state.shutters.map(shutter => (
+                                                shutter.shutterID === order.shutter
+                                                    ?
+                                                    <div>
+                                                        <div>
+                                                            <strong>Shutter's material: </strong> {shutter.material}
+                                                        </div>
+                                                        <div>
+                                                            <strong>Shutter's color: </strong> {shutter.color}
+                                                        </div>
+                                                        <div>
+                                                            <strong>Shutter's price: </strong> {shutter.price} $
+                                                        </div>
+                                                    </div>
+                                                    :
+                                                    <div>
+
+                                                    </div>
+                                            ))}
                                             <hr/>
                                         </div>
                                         :

@@ -21,39 +21,18 @@ router.post('/assignOrder', (req, res) => {
 });
 
 router.get('/listOrders',(req,res) =>{
-    if(req.query['customerID'] !== undefined){
-
-        managerService.listOrdersOfCustomer(parseInt(req.query['customerID']), (requests)=>{
-            res.status(200).send(requests)
-        });
-        return;
-    }
     managerService.listOrders((requests) =>{
         res.status(200).send(requests)
     })
 });
 
 router.get('/listCustomers',(req,res) =>{
-    if(req.query['customerID'] !== undefined){
-
-        managerService.listCustomer(parseInt(req.query['customerID']), (requests)=>{
-            res.status(200).send(requests)
-        });
-        return;
-    }
     managerService.listCustomers((requests) =>{
         res.status(200).send(requests)
     })
 });
 
 router.get('/listWorkers',(req,res) =>{
-    if(req.query['workerID'] !== undefined){
-
-        managerService.getWorker(parseInt(req.query['workerID']), (requests)=>{
-            res.status(200).send(requests)
-        });
-        return;
-    }
     managerService.getWorkers((requests) =>{
         res.status(200).send(requests)
     })

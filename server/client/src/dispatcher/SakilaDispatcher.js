@@ -6,6 +6,7 @@ import ManagerConstants from '../constants/ManagerConstants'
 import CustomerConstants from '../constants/CustomerConstants'
 import ShutterStore from '../store/ShutterStore'
 
+
 class SakilaDispatcher extends Dispatcher{
 
     handleViewAction(action){
@@ -21,16 +22,23 @@ class SakilaDispatcher extends Dispatcher{
             payload : action
         });
     }
+
+    // TODO update
 }
 
 const dispatcher = new SakilaDispatcher();
 
 
+
+/* **** POST METHODS **** */
+
+/* ASSIGN WORKER TO ORDER AND SET ORDER STATE TO 'INPROGRESS' FROM 'WAITING' */
+
 dispatcher.register((data)=>{
     if(data.payload.actionType !== ManagerConstants.ASSIGN_ORDER){
         return;
     }
-    console.log(data.payload.payload);
+
     fetch('/api/manager/assignOrder',{
         method : 'POST',
         headers : {
@@ -44,13 +52,14 @@ dispatcher.register((data)=>{
         });
 });
 
-/* PAYED ORDER */
+
+/* SET ORDER STATE TO 'PAYED' FROM 'FINISHED' */
 
 dispatcher.register((data)=>{
     if(data.payload.actionType !== ManagerConstants.CREATE_INVOICE) {
         return;
     }
-    console.log(data.payload.payload);
+
     fetch('/api/manager/createInvoice',{
         method : 'POST',
         headers : {
@@ -64,13 +73,14 @@ dispatcher.register((data)=>{
         });
 });
 
-/* CREATE CUSTOMER */
+
+/* REGISTER NEW CUSTOMER */
 
 dispatcher.register((data)=>{
     if(data.payload.actionType !== CustomerConstants.CREATE_CUSTOMER) {
         return;
     }
-    console.log(data.payload.payload);
+
     fetch('/api/customer/newCustomer',{
         method : 'POST',
         headers : {
@@ -80,17 +90,18 @@ dispatcher.register((data)=>{
 
     }).then((response) => { return response; })
         .then((res) =>{
-            console.log("");
+            console.log(res);
         });
 });
 
-/* NEW ORDER */
+
+/* CREATE NEW ORDER */
 
 dispatcher.register((data)=>{
     if(data.payload.actionType !== CustomerConstants.NEW_ORDER) {
         return;
     }
-    console.log(data.payload.payload);
+
     fetch('/api/customer/newOrder',{
         method : 'POST',
         headers : {
@@ -100,18 +111,18 @@ dispatcher.register((data)=>{
 
     }).then((response) => { return response; })
         .then((res) =>{
-            console.log("");
+            console.log(res);
         });
 });
 
 
-/*FINISH ORDER*/
+/* SET ORDER STATE TO 'FINISHED' FROM 'INPROGRESS' */
 
 dispatcher.register((data)=>{
     if(data.payload.actionType !== WorkerConstants.FINISH_ORDER){
         return;
     }
-    console.log(data.payload.payload);
+
     fetch('/api/worker/finishOrder',{
         method : 'POST',
         headers : {
@@ -121,31 +132,16 @@ dispatcher.register((data)=>{
 
     }).then((response) => { return response; })
         .then((res) =>{
-            console.log("");
+            console.log(res);
         });
 });
 
 
 
+/* ***** GET METHODS ***** */
 
 
-
-dispatcher.register((data)=>{
-    if(data.payload.actionType !== WorkerConstants.LIST_PENDING_ORDERS){
-        return;
-    }
-
-    fetch('/api/worker/listPendingOrders?workerID=2',{
-        headers : {
-            "Content-Type" : "application/json",
-            "Accept" : "application/json"
-        }
-    }).then(response =>{ return response.json()})
-        .then(result =>{
-            ShutterStore._orders = result;
-            ShutterStore.emitChange();
-        });
-});
+/* GET ORDERS OF WORKERS WITH STATE 'INPROGRESS' OR 'FINISHED' */
 
 dispatcher.register((data)=>{
     if(data.payload.actionType !== WorkerConstants.LIST_ORDERS){
@@ -162,7 +158,11 @@ dispatcher.register((data)=>{
             ShutterStore._orders = result;
             ShutterStore.emitChange();
         });
+
 });
+
+
+/* GET ALL WORKERS */
 
 dispatcher.register((data)=>{
     if(data.payload.actionType !== ManagerConstants.LIST_WORKERS){
@@ -181,6 +181,9 @@ dispatcher.register((data)=>{
         });
 });
 
+
+/* GET ALL SHUTTERS */
+
 dispatcher.register((data)=>{
     if(data.payload.actionType !== CustomerConstants.LIST_SHUTTERS){
         return;
@@ -198,11 +201,14 @@ dispatcher.register((data)=>{
         });
 });
 
+
+/* GET ALL CUSTOMERS */
+
 dispatcher.register((data)=>{
-    if(data.payload.actionType !== CustomerConstants.LIST_CUSTOMERS){
+    if(data.payload.actionType !== ManagerConstants.LIST_CUSTOMERS){
         return;
     }
-
+    console.log("customers "+data.payload.payload);
     fetch('/api/manager/listCustomers',{
         headers : {
             "Content-Type" : "application/json",
