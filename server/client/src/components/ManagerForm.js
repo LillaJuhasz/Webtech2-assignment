@@ -146,7 +146,7 @@ class ManagerForm extends React.Component {
                                                     <strong>Shutter color: </strong> {shutter.color}
                                                 </div>
                                                 <div>
-                                                    <strong>Shutter price: </strong> {shutter.price} $
+                                                    <strong>Shutter price: </strong> {shutter.price}$
                                                 </div>
                                             </div>
                                             :

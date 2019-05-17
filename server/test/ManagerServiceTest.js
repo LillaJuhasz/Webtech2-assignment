@@ -3,7 +3,7 @@ const sinon = require('sinon');
 
 const service = require('../services/ManagerService');
 
-describe('Customer Service Test',function(){
+describe('Manager Service Test',function(){
 
 
     it('list customer from DB',function(){
@@ -18,7 +18,7 @@ describe('Customer Service Test',function(){
                     customerID:1,
                     firstName:"first",
                     lastName:"last",
-                    address:"address",
+                    address:"address@address.com",
                     email:"email"
                 })
             }
@@ -48,7 +48,7 @@ describe('Customer Service Test',function(){
 
     it('list workers',function(){
         var dao = {
-            getAllWorkers : function(callback){
+            getWorkers : function(callback){
                 callback({
                     workerID:1,
                     firstName:"first",
@@ -63,10 +63,10 @@ describe('Customer Service Test',function(){
     });
 
     it('list worker test Mocked API called once', function(){
-        var dao  = { getAllWorkers : function(callback){}};
+        var dao  = { getWorkers : function(callback){}};
         var spy = sinon.spy();
         var daoMock = sinon.mock(dao);
-        daoMock.expects('getAllWorkers').once();
+        daoMock.expects('getWorkers').once();
         var s = new service(dao);
         s.getWorkers((requests) =>{});
 

@@ -179,7 +179,7 @@ class CustomerForm extends React.Component{
                                         <label className="block">
                                             <input name="shutter" value={shutter.shutterID} type="radio" onClick={this.selectShutter}/>
                                             <span>
-                                                {shutter.material}, {shutter.color}, {shutter.price} $
+                                                {shutter.material}, {shutter.color}, {shutter.price}$
                                             </span>
                                         </label>
                                         ))}
@@ -196,7 +196,7 @@ class CustomerForm extends React.Component{
                             </div>
                             <div>
                                 {this.state.orders.map(order => (
-                                    order.customerID === this.state.signedCustomer
+                                    order.customerID === this.state.signedCustomer[0]
                                         ?
                                         <div>
                                             <div>
@@ -213,7 +213,7 @@ class CustomerForm extends React.Component{
                                                             <strong>Shutter's color: </strong> {shutter.color}
                                                         </div>
                                                         <div>
-                                                            <strong>Shutter's price: </strong> {shutter.price} $
+                                                            <strong>Shutter's price: </strong> {shutter.price}$
                                                         </div>
                                                     </div>
                                                     :
@@ -230,7 +230,7 @@ class CustomerForm extends React.Component{
                             </div>
                             <div>
                                 {this.state.orders.map(order => (
-                                    (order.customerID === this.state.signedCustomer) && (order.invoice)
+                                    (order.customerID === this.state.signedCustomer[0]) && (order.invoice)
                                     ?
                                     <div>
                                         <div>
@@ -254,10 +254,10 @@ class CustomerForm extends React.Component{
                                                         Brutto Price: {shutter.price * 1.2}$
                                                     </div>
                                                     <div>
-                                                        Installation cost: 20$
+                                                        Installation cost: 50$
                                                     </div>
                                                     <div>
-                                                        You have to pay: {shutter.price * 1.2 + 20}$
+                                                        <strong>Invoice: {shutter.price * 1.2 + 50}$</strong>
                                                     </div>
                                                 </div>
                                                 :
