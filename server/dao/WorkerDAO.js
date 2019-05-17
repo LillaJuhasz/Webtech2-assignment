@@ -1,14 +1,39 @@
 const MongoClient = require('mongodb').MongoClient;
 const assert = require('assert');
 
-const url = 'mongodb://localhost:27017';
+const url = 'mongodb://172.21.0.10:27017';
 const dbName = 'shutter-shop';
 
 const orderDatabase = 'orderDatabase';
 
 
 
-function markOrderAsPacked(request, success, error) {
+/* *** GET METHODS *** */
+
+function getOrders(findParams, callback){
+    var client = new MongoClient(url);
+    client.connect((err)=>{
+        assert.equal(null, err);
+
+        const db = client.db(dbName);
+        const collection= db.collection(orderDatabase);
+
+        collection.find(findParams).toArray(function(err, docs) {
+            assert.equal(err, null);
+            callback(docs)
+        });
+        client.close();
+    })
+}
+
+function getAllOrders(callback){
+    getOrders({},(result) => {callback(result)})
+}
+
+
+/* *** POST METHODS *** */
+
+function finishOrder(request, success, error) {
     var client = new MongoClient(url);
     client.connect((err)=> {
         assert.equal(null, err);
@@ -37,41 +62,13 @@ function markOrderAsPacked(request, success, error) {
                     });
                 client.close();
             }
-
         })
-
     })
-}
-
-
-function readOrders(findParams, callback){
-    var client = new MongoClient(url);
-    client.connect((err)=>{
-        assert.equal(null, err);
-
-        const db = client.db(dbName);
-        const collection= db.collection(orderDatabase);
-
-        collection.find(findParams).toArray(function(err, docs) {
-            assert.equal(err, null);
-            callback(docs)
-        });
-        client.close();
-    })
-}
-
-function readAllOrders(callback){
-    readOrders({},(result) => {callback(result)})
-}
-
-function readOrdersByID(orderID,callback){
-    readOrders({"orderID" : orderID},(result) => {callback(result)})
 }
 
 
 
 module.exports = {
-    "markOrderAsPacked": markOrderAsPacked,
-    "readOrders": readAllOrders,
-    "readOrdersByID" : readOrdersByID
+    "finishOrder": finishOrder,
+    "getOrders": getAllOrders
 };

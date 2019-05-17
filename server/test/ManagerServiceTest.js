@@ -8,12 +8,12 @@ describe('Customer Service Test',function(){
 
     it('list customer from DB',function(){
         var s = new service();
-        s.listCustomers((requests) => console.log(requests))
+        s.getCustomers((requests) => console.log(requests))
     });
 
     it('list customers',function(){
         var dao = {
-            readCustomers : function(callback){
+            getCustomers : function(callback){
                 callback({
                     customerID:1,
                     firstName:"first",
@@ -24,18 +24,18 @@ describe('Customer Service Test',function(){
             }
         };
         var s = new service(dao);
-        s.listCustomers((requests) => {
+        s.getCustomers((requests) => {
             console.log('requests');
             console.log(requests)})
     });
 
     it('list customers test Mocked API called once', function(){
-        var dao  = { readCustomers : function(callback){}};
+        var dao  = { getCustomers : function(callback){}};
         var spy = sinon.spy();
         var daoMock = sinon.mock(dao);
-        daoMock.expects('readCustomers').once();
+        daoMock.expects('getCustomers').once();
         var s = new service(dao);
-        s.listCustomers((requests) =>{});
+        s.getCustomers((requests) =>{});
 
         assert(daoMock.verify())
 
@@ -48,7 +48,7 @@ describe('Customer Service Test',function(){
 
     it('list workers',function(){
         var dao = {
-            readAllWorkers : function(callback){
+            getAllWorkers : function(callback){
                 callback({
                     workerID:1,
                     firstName:"first",
@@ -63,10 +63,10 @@ describe('Customer Service Test',function(){
     });
 
     it('list worker test Mocked API called once', function(){
-        var dao  = { readAllWorkers : function(callback){}};
+        var dao  = { getAllWorkers : function(callback){}};
         var spy = sinon.spy();
         var daoMock = sinon.mock(dao);
-        daoMock.expects('readAllWorkers').once();
+        daoMock.expects('getAllWorkers').once();
         var s = new service(dao);
         s.getWorkers((requests) =>{});
 

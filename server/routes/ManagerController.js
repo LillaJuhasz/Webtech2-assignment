@@ -5,15 +5,31 @@ var ms = require('../services/ManagerService');
 const managerService = new ms();
 
 
+
+/* *** GET METHODS *** */
+
+router.get('/getCustomers',(req,res) =>{
+    managerService.getCustomers((requests) =>{
+        res.status(200).send(requests)
+    })
+});
+
+router.get('/getWorkers',(req,res) =>{
+    managerService.getWorkers((requests) =>{
+        res.status(200).send(requests)
+    })
+});
+
+
 /* *** POST METHODS *** */
 
 router.post('/assignOrder', (req, res) => {
     if (req.body['workerID'] === undefined || req.body['workerID'] === '') {
-        res.status(400).send("Worker id must be defined");
+        res.status(400).send("Worker ID must be defined");
         return;
     }
     if (req.body['orderID'] === undefined || req.body['orderID'] === '') {
-        res.status(400).send("Order id must be defined");
+        res.status(400).send("Order ID must be defined");
         return;
     }
 
@@ -23,30 +39,15 @@ router.post('/assignOrder', (req, res) => {
 });
 
 
-router.post('/createInvoice', (req, res) => {
+router.post('/postInvoice', (req, res) => {
     if (req.body['orderID'] === undefined || req.body['orderID'] === '') {
-        res.status(400).send("Order id must be defined");
+        res.status(400).send("Order ID must be defined");
         return;
     }
 
-    managerService.createInvoice({orderID: req.body['orderID'], shutterID: req.body['shutter']},
-        () => {res.status(200).send("Invoice created.")},
+    managerService.postInvoice({orderID: req.body['orderID'], shutterID: req.body['shutter']},
+        () => {res.status(200).send("Invoice created")},
         (cause) => {res.status(400).send(cause)})
-});
-
-
-/* *** GET METHODS *** */
-
-router.get('/listCustomers',(req,res) =>{
-    managerService.listCustomers((requests) =>{
-        res.status(200).send(requests)
-    })
-});
-
-router.get('/listWorkers',(req,res) =>{
-    managerService.getWorkers((requests) =>{
-        res.status(200).send(requests)
-    })
 });
 
 

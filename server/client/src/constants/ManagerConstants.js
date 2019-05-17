@@ -1,6 +1,6 @@
 module.exports = {
     ASSIGN_ORDER : 'assign-order',
-    CREATE_INVOICE : 'create-invoice',
-    LIST_WORKERS : 'list-workers',
-    LIST_CUSTOMERS: 'list-customers'
+    POST_INVOICE : 'post-invoice',
+    GET_WORKERS : 'get-workers',
+    GET_CUSTOMERS: 'get-customers'
 };

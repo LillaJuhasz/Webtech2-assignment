@@ -1,18 +1,23 @@
 var express = require('express');
 var router = express.Router();
 
-var srs = require('../services/CustomerService');
-const customerService = new srs();
+var cs = require('../services/CustomerService');
+const customerService = new cs();
 
+
+
+/* *** GET METHODS *** */
+
+router.get('/getShutters',(req,res) =>{
+    customerService.getShutters((requests) =>{
+        res.status(200).send(requests)
+    })
+});
 
 
 /* *** POST METHODS *** */
 
-router.post('/newCustomer', (req, res) => {
-    if ( req.body['customerID'] === undefined || req.body['customerID'] ==='') {
-        res.status(414).send('Customer ID must be defined');
-        return;
-    }
+router.post('/postCustomer', (req, res) => {
     if ( req.body['firstName'] === undefined || req.body['firstName'] ==='') {
         res.status(414).send('First name must be defined');
         return;
@@ -26,10 +31,11 @@ router.post('/newCustomer', (req, res) => {
         return;
     }
     if ( req.body['email'] === undefined || req.body['email'] ==='') {
-        res.status(414).send('Email must be defined');
+        res.status(414).send('E-mail must be defined');
         return;
     }
-    customerService.createCustomer({
+
+    customerService.postCustomer({
             customerID: req.body['customerID'],
             firstName:req.body['firstName'],
             lastName: req.body['lastName'],
@@ -40,15 +46,7 @@ router.post('/newCustomer', (req, res) => {
 });
 
 
-router.post('/newOrder', (req, res) => {
-    if ( req.body['orderID'] === undefined || req.body['orderID'] ==='') {
-        res.status(414).send('Order must be defined');
-        return;
-    }
-    if ( req.body['customerID'] === undefined || req.body['customerID'] ==='') {
-        res.status(414).send('Customer id must be defined');
-        return;
-    }
+router.post('/postOrder', (req, res) => {
     if ( req.body['windowWidth'] === undefined || req.body['windowWidth'] ==='') {
         res.status(414).send('Window width must be defined');
         return;
@@ -61,7 +59,7 @@ router.post('/newOrder', (req, res) => {
         res.status(414).send('Shutter must be defined');
         return;
     }
-    customerService.createOrder({
+    customerService.postOrder({
             orderID: req.body['orderID'],
             customerID: req.body['customerID'],
             windowWidth: req.body['windowWidth'],
@@ -70,15 +68,6 @@ router.post('/newOrder', (req, res) => {
             state: 'waiting'},
         () => {res.status(200).send('Order placed')},
         (cause) => res.status(400).send(cause))
-});
-
-
-/* *** GET METHODS *** */
-
-router.get('/listShutters',(req,res) =>{
-    customerService.getShutters((requests) =>{
-        res.status(200).send(requests)
-    })
 });
 
 

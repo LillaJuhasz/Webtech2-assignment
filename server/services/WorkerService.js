@@ -1,5 +1,4 @@
 function WorkerService(workerDAO) {
-    // logger
     md5 = require('md5.js');
 
     if (workerDAO !== undefined && workerDAO != null) {
@@ -10,18 +9,23 @@ function WorkerService(workerDAO) {
 }
 
 
-WorkerService.prototype.markOrder = function (request, success, error) {
+
+/* *** GET METHODS *** */
+
+WorkerService.prototype.getOrders = function(callback){
+    this.workerDAO.getOrders((requests) => {callback(requests)})
+};
+
+
+/* *** POST METHODS *** */
+
+WorkerService.prototype.finishOrder = function (request, success, error) {
     request['state'] = new md5().update(JSON.stringify({
         workers: request['workerID'],
         orders: request['orderID'],
     })).digest('hex');
 
-    this.workerDAO.markOrderAsPacked(request, ()=>{success()}, (cause) => {error(cause)})
-};
-
-
-WorkerService.prototype.listOrders = function(callback){
-    this.workerDAO.readOrders((requests) => {callback(requests)})
+    this.workerDAO.finishOrder(request, ()=>{success()}, (cause) => {error(cause)})
 };
 
 

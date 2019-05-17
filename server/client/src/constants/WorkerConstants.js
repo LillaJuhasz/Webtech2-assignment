@@ -1,4 +1,4 @@
 module.exports = {
-    LIST_ORDERS : 'list-orders',
+    GET_ORDERS : 'get-orders',
     FINISH_ORDER : 'finish-order'
 };

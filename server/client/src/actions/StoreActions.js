@@ -1,27 +1,35 @@
-import WorkerConstants from '../constants/WorkerConstants'
 import ManagerConstants from "../constants/ManagerConstants";
+import WorkerConstants from '../constants/WorkerConstants';
 import CustomerConstants from "../constants/CustomerConstants";
-import SakilaDispatcher from '../dispatcher/SakilaDispatcher';
+import Dispatcher from '../dispatcher/Dispatcher';
 
 
 class StoreActions {
 
-    finishOrder = (e) => {
-        let orderID = Number(e.target.name);
-        let workerID = Number(e.target.value);
 
-        SakilaDispatcher.handlePostAction({
-                actionType: WorkerConstants.FINISH_ORDER,
-                payload: {
-                    orderID: orderID,
-                    workerID: workerID
-                }
-            }
-        );
-    };
+    getWorkers(workerID){
+        Dispatcher.handleViewAction({
+            actionType : ManagerConstants.GET_WORKERS,
+            payload : workerID
+        });
+    }
 
-    saveOrderSettings = (orderID, workerID) => {
-        SakilaDispatcher.handlePostAction({
+    getShutters(shutterID){
+        Dispatcher.handleViewAction({
+            actionType : CustomerConstants.GET_SHUTTERS,
+            payload : shutterID
+        });
+    }
+
+    getCustomers(customerID){
+        Dispatcher.handleViewAction({
+            actionType : ManagerConstants.GET_CUSTOMERS,
+            payload : customerID
+        });
+    }
+
+    assignOrder = (orderID, workerID) => {
+        Dispatcher.handlePostAction({
                 actionType: ManagerConstants.ASSIGN_ORDER,
                 payload: {
                     orderID: orderID,
@@ -31,28 +39,53 @@ class StoreActions {
         );
     };
 
-    setPayed = (e) => {
+    postInvoice = (e) => {
         let orderID = Number(e.target.value);
-        let shutterID;
 
-        SakilaDispatcher.handlePostAction({
-                actionType: ManagerConstants.CREATE_INVOICE,
+        Dispatcher.handlePostAction({
+                actionType: ManagerConstants.POST_INVOICE,
                 payload: {
-                    orderID: orderID,
-                    shutterID: shutterID
+                    orderID: orderID
                 }
             }
         );
     };
 
-    registration = (id) => {
+    getOrders(orderID){
+        setTimeout(
+            function() {
+                Dispatcher.handleViewAction({
+                    actionType : WorkerConstants.GET_ORDERS,
+                    payload : orderID
+                });
+            }
+            ,100
+        );
+
+    }
+
+    finishOrder = (e) => {
+        let orderID = Number(e.target.name);
+        let workerID = Number(e.target.value);
+
+        Dispatcher.handlePostAction({
+                actionType: WorkerConstants.FINISH_ORDER,
+                payload: {
+                    orderID: orderID,
+                    workerID: workerID
+                }
+            }
+        );
+    };
+
+    postCustomer = (id) => {
         let firstName = document.getElementById("firstName").value;
         let lastName = document.getElementById("lastName").value;
         let email = document.getElementById("email").value;
         let address = document.getElementById("address").value;
 
-        SakilaDispatcher.handlePostAction({
-                actionType: CustomerConstants.CREATE_CUSTOMER,
+        Dispatcher.handlePostAction({
+                actionType: CustomerConstants.POST_CUSTOMER,
                 payload: {
                     customerID: id,
                     firstName: firstName,
@@ -64,13 +97,13 @@ class StoreActions {
         );
     };
 
-    createOrder = (shutter, orderID, customerID) => {
+    postOrder = (shutter, orderID, customerID) => {
         let windowWidth = document.getElementById("windowWidth").value;
         let windowHeight = document.getElementById("windowHeight").value;
 
 
-        SakilaDispatcher.handlePostAction({
-                actionType: CustomerConstants.NEW_ORDER,
+        Dispatcher.handlePostAction({
+                actionType: CustomerConstants.POST_ORDER,
                 payload: {
                     orderID: orderID,
                     customerID: customerID,
@@ -81,40 +114,6 @@ class StoreActions {
             }
         );
     };
-
-    listWorkers(workerID){
-        SakilaDispatcher.handleViewAction({
-            actionType : ManagerConstants.LIST_WORKERS,
-            payload : workerID
-        });
-    }
-
-    listShutters(shutterID){
-        SakilaDispatcher.handleViewAction({
-            actionType : CustomerConstants.LIST_SHUTTERS,
-            payload : shutterID
-        });
-    }
-
-    listCustomers(customerID){
-        SakilaDispatcher.handleViewAction({
-            actionType : ManagerConstants.LIST_CUSTOMERS,
-            payload : customerID
-        });
-    }
-
-    listOrders(orderID){
-        setTimeout(
-            function() {
-                SakilaDispatcher.handleViewAction({
-                    actionType : WorkerConstants.LIST_ORDERS,
-                    payload : orderID
-                });
-            }
-            ,100
-        );
-
-    }
 }
 
 export default new StoreActions();

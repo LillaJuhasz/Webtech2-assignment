@@ -7,29 +7,25 @@ class ManagerForm extends React.Component {
 
     constructor(props) {
         super(props);
+
+        StoreActions.getOrders();
+        StoreActions.getWorkers();
+        StoreActions.getShutters();
+        StoreActions.getCustomers();
+
+        this._onChange = this._onChange.bind(this);
+
         this.state = {
-            listOrders: false,
             shutters: ShutterStore._shutters,
             workers: ShutterStore._workers,
             orders: ShutterStore._orders,
             customers: ShutterStore._customers,
+            getOrders: false,
             selectedWorker: [],
             selectedShutter: []
         };
-
-        StoreActions.listOrders();
-        StoreActions.listWorkers();
-        StoreActions.listShutters();
-        StoreActions.listCustomers();
-        this._onChange = this._onChange.bind(this);
     }
 
-    _onChange(){
-        this.setState({orders : ShutterStore._orders});
-        this.setState({shutters : ShutterStore._shutters});
-        this.setState({workers : ShutterStore._workers});
-        this.setState({customers : ShutterStore._customers});
-    }
 
     componentDidMount(){
         ShutterStore.addChangeListener(this._onChange);
@@ -39,34 +35,33 @@ class ManagerForm extends React.Component {
         ShutterStore.removeChangeListener(this._onChange)
     }
 
+    _onChange(){
+        this.setState({orders : ShutterStore._orders});
+        this.setState({shutters : ShutterStore._shutters});
+        this.setState({workers : ShutterStore._workers});
+        this.setState({customers : ShutterStore._customers});
+    }
 
-    saveOrderSettings = (orderID, workerID) => {
+
+    assignOrder = (orderID, workerID) => {
         workerID = this.state.selectedWorker;
-        StoreActions.saveOrderSettings(orderID, workerID);
-        StoreActions.listOrders(orderID);
+        StoreActions.assignOrder(orderID, workerID);
+        StoreActions.getOrders(orderID);
     };
 
     handleInputChange = (e) => {
         this.setState({selectedWorker: Number(e.target.value)});
     };
 
-    setPayed = (e, shutterID) => {
-
-        console.log(e.target.value);
-
-        this.state.orders.map(order =>{
-            console.log(order.shutter);
-        });
-
-
-        StoreActions.setPayed(e);
-        StoreActions.listOrders(e);
+    postInvoice = (e) => {
+        StoreActions.postInvoice(e);
+        StoreActions.getOrders(e);
 
         alert("Order mark as payed!");
     };
 
-    listOrders = () =>  {
-        this.setState({listOrders: true});
+    getOrders = () =>  {
+        this.setState({getOrders: true});
     };
 
     showData = (e) =>  {
@@ -75,7 +70,6 @@ class ManagerForm extends React.Component {
     };
 
     selectedRadio = () => {
-        console.log("button selected");
     };
 
 
@@ -88,18 +82,15 @@ class ManagerForm extends React.Component {
                     </div>
                 </div>
                 <div>
-                    {this.state.listOrders === false
+                    {this.state.getOrders === false
                         ?
                         <div>
-                            <button className="btn" onClick={this.listOrders}>
+                            <button className="btn" onClick={this.getOrders}>
                                 List orders
                             </button>
                         </div>
                         :
                         <div>
-                            <button className="btn" onClick={this.listOrders}>
-                                List orders
-                            </button>
                             <hr/>
                             <div>
                                 {ShutterStore._orders.map(order => (
@@ -115,10 +106,10 @@ class ManagerForm extends React.Component {
                                             <div>
                                                 <div className="customer-data" id={order.orderID}>
                                                     <div>
-                                                        Customer's ID:
+                                                        Customer's ID: {customer.customerID}
                                                     </div>
                                                     <button name={order.orderID} className="btn" onClick={this.showData}>
-                                                        {customer.customerID}
+                                                        Show info
                                                     </button>
                                                 </div>
                                                 <div className="more-data">
@@ -181,7 +172,7 @@ class ManagerForm extends React.Component {
                                                         </label>
                                                         <div>
                                                             <button className="btn" value={order.orderID}
-                                                                    onClick={this.setPayed}>
+                                                                    onClick={this.postInvoice}>
                                                                 Save
                                                             </button>
                                                         </div>
@@ -229,7 +220,7 @@ class ManagerForm extends React.Component {
                                                     </label>
                                                 ))}
                                                 <div>
-                                                    <button className="btn" name={order.orderID} onClick={()=>this.saveOrderSettings(order.orderID)}>
+                                                    <button className="btn" name={order.orderID} onClick={()=>this.assignOrder(order.orderID)}>
                                                         Save
                                                     </button>
                                                 </div>

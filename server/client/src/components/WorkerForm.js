@@ -7,26 +7,23 @@ class WorkerForm extends React.Component{
 
     constructor(props) {
         super(props);
-        this.state = {
-            signed: false,
-            signWId: undefined,
-            shutters: ShutterStore._shutters,
-            workers: ShutterStore._workers,
-            orders: ShutterStore._orders
-        };
 
-        StoreActions.listOrders();
-        StoreActions.listShutters();
-        StoreActions.listWorkers();
+        StoreActions.getOrders();
+        StoreActions.getShutters();
+        StoreActions.getWorkers();
+
         this._onChange = this._onChange.bind(this);
         this.handleStateSet = this.handleStateSet.bind(this);
+
+        this.state = {
+            shutters: ShutterStore._shutters,
+            workers: ShutterStore._workers,
+            orders: ShutterStore._orders,
+            signed: false,
+            signedWorker: undefined
+        };
     }
 
-    _onChange(){
-        this.setState({orders : ShutterStore._orders});
-        this.setState({shutters : ShutterStore._shutters});
-        this.setState({workers : ShutterStore._workers});
-    }
 
     componentDidMount(){
         ShutterStore.addChangeListener(this._onChange);
@@ -36,6 +33,11 @@ class WorkerForm extends React.Component{
         ShutterStore.removeChangeListener(this._onChange)
     }
 
+    _onChange(){
+        this.setState({orders : ShutterStore._orders});
+        this.setState({shutters : ShutterStore._shutters});
+        this.setState({workers : ShutterStore._workers});
+    }
 
     handleStateSet({ target }) {
         this.setState({
@@ -43,6 +45,25 @@ class WorkerForm extends React.Component{
         });
     }
 
+
+    signIn = () =>  {
+        let validate = false;
+
+        this.state.workers.map(worker => {
+            if(Number(this.state.signedWorker) === Number(worker.workerID)) {
+                this.setState({signed: true});
+                validate = true;
+            }
+        });
+
+        if(validate === false) {
+            alert(this.state.signedWorker + " is not a valid worker ID!");
+        }
+    };
+
+    signOut = () =>  {
+        this.setState({signed: false});
+    };
 
     finishOrder = (e) => {
         StoreActions.finishOrder(e);
@@ -54,29 +75,9 @@ class WorkerForm extends React.Component{
         });
         e.target.checked = true;
 
-        StoreActions.listOrders(e);
+        StoreActions.getOrders(e);
 
         alert("Order marked as finished!");
-    };
-
-
-    signIn = () =>  {
-        let validate = false;
-
-        this.state.workers.map(worker => {
-            if(Number(this.state.signWId) === Number(worker.workerID)) {
-                this.setState({signed: true});
-                validate = true;
-            }
-        });
-
-        if(validate === false) {
-            alert(this.state.signWId + " is not a valid worker ID");
-        }
-    };
-
-    signOut = () =>  {
-        this.setState({signed: false});
     };
 
 
@@ -98,7 +99,7 @@ class WorkerForm extends React.Component{
                             <div>
                                 <div>
                                     <div>
-                                        <input type="number" name="signWId" onChange={this.handleStateSet}/>
+                                        <input type="number" name="signedWorker" onChange={this.handleStateSet}/>
                                     </div>
                                     <button className="btn" onClick={this.signIn}>
                                         Sign in
@@ -110,7 +111,7 @@ class WorkerForm extends React.Component{
                     :
                     <div>
                     {this.state.workers.map(worker => (
-                        Number(worker.workerID) === Number(this.state.signWId)
+                        Number(worker.workerID) === Number(this.state.signedWorker)
                         ?
                         <div>
                             <div className="">
@@ -130,7 +131,7 @@ class WorkerForm extends React.Component{
                                 </div>
                                 <div className="margintop-10">
                                     {this.state.orders.map(order => (
-                                        Number(worker.workerID) === Number(order.workerID) && order.state === 'inprogress'
+                                        Number(worker.workerID) === Number(order.workerID) && order.state === 'pending'
                                         ?
                                         <div>
                                             <div>

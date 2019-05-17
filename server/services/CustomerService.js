@@ -1,5 +1,4 @@
 function CustomerService(customerDAO) {
-    // logger
     md5 = require('md5.js');
 
     if (customerDAO !== undefined && customerDAO != null) {
@@ -9,22 +8,24 @@ function CustomerService(customerDAO) {
     }
 }
 
-CustomerService.prototype.createCustomer = function (request, success) {
-    this.customerDAO.createCustomer(request, ()=>{success()})
-};
 
-CustomerService.prototype.createOrder = function (request, callback) {
-    this.customerDAO.createOrder(request, ()=>{callback()})
-};
-
+/* *** GET METHODS *** */
 
 CustomerService.prototype.getShutters = function(callback){
-    this.customerDAO.readShutters((requests) => {callback(requests)})
+    this.customerDAO.getShutters((requests) => {callback(requests)})
 };
 
-CustomerService.prototype.listOrders = function(callback){
-    this.customerDAO.readOrders((requests) => {callback(requests)})
+
+/* *** POST METHODS *** */
+
+CustomerService.prototype.postCustomer = function (request, callback, error) {
+    this.customerDAO.postCustomer(request, ()=>{callback()}, (cause) => {error(cause)})
 };
+
+CustomerService.prototype.postOrder = function (request, callback, error) {
+    this.customerDAO.postOrder(request, ()=>{callback()}, (cause) => {error(cause)})
+};
+
 
 
 module.exports = CustomerService;

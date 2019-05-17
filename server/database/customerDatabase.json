@@ -1,4 +1,4 @@
-{"customerID":1, "firstName":"first", "lastName":"firstlast", "address":"first address", "email":"first@first.com"}
-{"customerID":2, "firstName":"second", "lastName":"secondlast", "address":"second address", "email":"second@second.com"}
-{"customerID":3, "firstName":"third", "lastName":"thirdlast", "address":"third address", "email":"third@third.com"}
-{"customerID":4, "firstName":"fourth", "lastName":"fourthlast", "address":"fourth address", "email":"third@third.com"}
+{"customerID":1, "firstName":"Lilla", "lastName":"Juhasz", "address":"3300. Eger, Kovacs Jakab utca 25.", "email":"lillaajuhasz@gmail.com"}
+{"customerID":2, "firstName":"Krisztian", "lastName":"Kekedi", "address":"3535. Miskolc, Szeder utca 30.", "email":"kekedi.krisztian@gmail.com"}
+{"customerID":3, "firstName":"Andras", "lastName":"Minta", "address":"1000. Minta, Minta utca 1.", "email":"andras@minta.com"}
+{"customerID":4, "firstName":"Geza", "lastName":"Pelda", "address":"2000. Pelda, Pelda utca 2.", "email":"geza@pelda.com"}

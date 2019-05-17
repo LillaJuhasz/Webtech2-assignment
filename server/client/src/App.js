@@ -9,10 +9,10 @@ import ManagerForm from "./components/ManagerForm";
 function App() {
   return (
     <div className="App container container-main">
-        <div className="app-title">
-            Shuttershop
-        </div>
         <div className="row form">
+            <div className="app-title">
+                Shuttershop
+            </div>
             <div className="col-md-12">
                 <CustomerForm/>
             </div>

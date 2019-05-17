@@ -1,7 +1,7 @@
 const MongoClient = require('mongodb').MongoClient;
 const assert = require('assert');
 
-const url = 'mongodb://localhost:27017';
+const url = 'mongodb://172.21.0.10:27017';
 const dbName = 'shutter-shop';
 
 const customerDatabase = 'customerDatabase';
@@ -9,7 +9,55 @@ const orderDatabase = 'orderDatabase';
 const workerDatabase = 'workerDatabase';
 
 
-function assignOrderToWorker(request, success, error) {
+
+
+/* *** GET METHODS *** */
+
+function getCustomers(findParams, callback){
+    var client = new MongoClient(url);
+    client.connect((err)=>{
+        assert.equal(null, err);
+
+        const db = client.db(dbName);
+        const collection= db.collection(customerDatabase);
+
+        collection.find(findParams).toArray(function(err, docs) {
+            assert.equal(err, null);
+            callback(docs)
+        });
+        client.close();
+    })
+}
+
+function getAllCustomers(callback){
+    getCustomers({},(result) => {callback(result)})
+}
+
+
+function getWorkers(findParams, callback){
+    var client = new MongoClient(url);
+    client.connect((err)=>{
+        assert.equal(null, err);
+
+        const db = client.db(dbName);
+        const collection= db.collection(workerDatabase);
+
+        collection.find(findParams).toArray(function(err, docs) {
+            assert.equal(err, null);
+            callback(docs)
+        });
+        client.close();
+    })
+}
+
+function getAllWorkers(callback){
+    getWorkers({},(result) => {callback(result)})
+}
+
+
+/* *** POST METHODS *** */
+
+function assignOrder(request, success, error) {
     var client = new MongoClient(url);
     client.connect((err)=> {
         assert.equal(null, err);
@@ -26,7 +74,7 @@ function assignOrderToWorker(request, success, error) {
                     {
                         $set: {
                             workerID: request['workerID'],
-                            state: 'inprogress'
+                            state: 'pending'
                         }
                     }, (err,res)=>{
                         assert.equal(null, err);
@@ -39,80 +87,7 @@ function assignOrderToWorker(request, success, error) {
     })
 }
 
-
-function readOrders(findParams, callback){
-    var client = new MongoClient(url);
-    client.connect((err)=>{
-        assert.equal(null, err);
-
-        const db = client.db(dbName);
-        const collection= db.collection(orderDatabase);
-
-        collection.find(findParams).toArray(function(err, docs) {
-            assert.equal(err, null);
-            callback(docs)
-        });
-        client.close();
-    })
-}
-
-function readAllOrders(callback){
-    readOrders({},(result) => {callback(result)})
-}
-
-function readOrdersOfCustomer(customerID,callback){
-    readOrders({"customerID" : customerID},(result) => {callback(result)})
-}
-
-function readCustomers(findParams, callback){
-    var client = new MongoClient(url);
-    client.connect((err)=>{
-        assert.equal(null, err);
-
-        const db = client.db(dbName);
-        const collection= db.collection(customerDatabase);
-
-        collection.find(findParams).toArray(function(err, docs) {
-            assert.equal(err, null);
-            callback(docs)
-        });
-        client.close();
-    })
-}
-
-function readAllCustomers(callback){
-    readCustomers({},(result) => {callback(result)})
-}
-
-function readCustomer(customerID,callback){
-    readCustomers({"customerID" : customerID},(result) => {callback(result)})
-}
-
-function readWorkers(findParams, callback){
-    var client = new MongoClient(url);
-    client.connect((err)=>{
-        assert.equal(null, err);
-
-        const db = client.db(dbName);
-        const collection= db.collection(workerDatabase);
-
-        collection.find(findParams).toArray(function(err, docs) {
-            assert.equal(err, null);
-            callback(docs)
-        });
-        client.close();
-    })
-}
-
-function readAllWorkers(callback){
-    readWorkers({},(result) => {callback(result)})
-}
-
-function readWorker(customerID,callback){
-    readWorkers({"customerID" : customerID},(result) => {callback(result)})
-}
-
-function createInvoice(request, success, error) {
+function postInvoice(request, success, error) {
     var client = new MongoClient(url);
     client.connect((err)=> {
         assert.equal(null, err);
@@ -139,21 +114,15 @@ function createInvoice(request, success, error) {
                     });
                 client.close();
             }
-
         });
-
     })
 }
 
 
 
 module.exports = {
-    "assignOrderToWorker" : assignOrderToWorker,
-    "readOrders" : readAllOrders,
-    "readOrdersOfCustomer" : readOrdersOfCustomer,
-    "readCustomers" : readAllCustomers,
-    "readCustomer" : readCustomer,
-    "createInvoice" : createInvoice,
-    "readAllWorkers" : readAllWorkers,
-    "readWorker": readWorker
+    "assignOrder" : assignOrder,
+    "postInvoice" : postInvoice,
+    "getCustomers" : getAllCustomers,
+    "getWorkers" : getAllWorkers
 };
